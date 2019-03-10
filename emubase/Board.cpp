@@ -506,7 +506,7 @@ void CMotherboard::KeyboardEvent(uint8_t scancode, bool okPressed, bool okAr2)
     {
         m_Port177662rd = scancode & 0177;
         m_Port177660 |= 0200;  // "Key ready" flag in keyboard state register
-        if ((m_Port177660 & 0100) == 0100)  // Keyboard interrupt enabled
+        if ((m_Port177660 & 0100) == 0)  // Keyboard interrupt enabled
         {
             uint16_t intvec = ((okAr2 || (scancode & 0200) != 0) ? 0274 : 060);
             m_pCPU->InterruptVIRQ(1, intvec);
@@ -972,7 +972,7 @@ void CMotherboard::SetPortWord(uint16_t address, uint16_t word)
         break;
 
     case 0177660:  // Keyboard status register
-        //TODO
+        m_Port177660 = (m_Port177660 & ~0100) | (word & 0100);
         break;
 
     case 0177662:  // Palette register
